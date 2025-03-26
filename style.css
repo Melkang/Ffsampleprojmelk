@@ -1,4 +1,4 @@
-@layer reset, base, utilities, layout;
+/*@layer reset, base, utilities, layout;*/
 
 /* the reset here*/
 @layer reset {
@@ -52,7 +52,7 @@
     line-height: 1.1;
   }
 
-  /*if a line of text shifts words to another line, this will balance the amount of words*/
+  /*if a line of text shifts words to another line, this will balance the amount of words- progressive enhancement*/
   h1,
   h2,
   h3,
@@ -60,7 +60,7 @@
     text-wrap: balance;
   }
 
-  /*large blocks of texts might create an orphan word, but this prevents it- as long as browser supports it*/
+  /*large blocks of texts might create an orphan word, but this prevents it- as long as browser supports it-progressive enhancement*/
   p,
   li {
     text-wrap: pretty;
@@ -160,35 +160,158 @@
     --border-radius-sm: 0.25rem;
     --border-radius-med: 0.5rem;
     --border-radius-lg: 0.75rem;
+  }
+}
 
-    /* Custom Properties*/
-    html {
-      font-family: var(--ff-body);
-      line-height: 1.6rem;
+@layer base {
+  /*Custom Properties*/
+  html {
+    font-family: var(--ff-body);
+    line-height: 1.6rem;
+  }
+
+  h1 {
+    font-size: var(--font-size-heading-lg);
+  }
+
+  body {
+    font-family: var(--ff-body);
+    font-size: var(--font-size-regular);
+    color: var(--text-main);
+    background-color: var(--background-main);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--ff-heading);
+    font-weight: 700;
+    color: var(--text-high-contrast);
+  }
+
+  a {
+    color: var(--text-high-contrast);
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--text-brand-light);
+  }
+
+  img {
+    border-radius: var(--border-radius-lg);
+  }
+}
+
+/* limit the maximum width the content can reach and add custom properties because it shows up in multi spots*/
+@layer layout {
+  /* since margin:0 was applied in the beginning, flow(spacing) needs to be added back. Flow class-selects everything except the first child*/
+  .flow > * + * {
+    margin-top: var(
+      --flow-spacer,
+      1em
+    ); /*provides larger gap with proximity to text than rem*/
+  }
+
+  .grid-flow {
+    display: grid;
+    gap: var(--grid-flow-gap, 1rem);
+  }
+  .equal-columns {
+    display: grid;
+    gap: var(--equal-columns-gap, 1rem);
+    align-items: var(--equal-columns-vertical-alignment, stretch);
+
+    @media (width > 760px) {
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
     }
 
-    body {
-      font-family: var(--ff-body);
-      font-size: var(--font-size-regular);
-      color: var(--text-main);
-      background-color: var(--background-main);
+    &[data-gap="large"] {
+      --equal-columns-gap: 2rem;
     }
 
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: var(--ff-heading) "Outfit", sans-serif;
-      font-weight: 700;
-      color: var(--text-high-contrast);
+    &[data-alignment="centered"] {
+      --equal-columns-vertical-alignment: center;
     }
+    /*if wanting to do flex and have same exact width for each column: 
+    .flex-equal-columns 
+    {display: flex;
+    >* {flex: 1;}}*/
+  }
+  .wrapper {
+    /*or can do the calc(1130px +2rem) with 1 rem = to 16px on each side instead of changing box sizing*/
+    --wrapper-max-width: 1130px;
+    --wrapper-padding: 1rem;
 
-    h1 {
-      font-size: var(--font-size-heading-lg);
+    max-width: var(--wrapper-max-width);
+    margin-inline: auto;
+    padding-inline: var(--wrapper-padding);
+
+    /* helps to match the Figma file sizing to set it to the content */
+    box-sizing: content-box;
+  }
+
+  /*data attributes based on CUBE CSS styling. Easier to read in HTML. Can hook into with JS. The symbol & is a placeholder for the original selector (wrapper)*/
+  .wrapper[data-width="narrow"] {
+    --wrapper-max-width: 720px;
+  }
+
+  .wrapper[data-width="wide"] {
+    --wrapper-max-width: 1330px;
+  }
+
+  .section {
+    --padding-block: 3.75rem;
+    padding-block: var(--padding-block);
+
+    @media (min-width: 760px) {
+      --padding-block: 8rem;
+
+      &[data-padding="compact"] {
+        --padding-block: 4.5rem;
+      }
+    }
+  }
+}
+
+@layer components {
+  .site-header {
+    padding-block: 1rem;
+  }
+
+  .site-header--inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem; /*font spacing to make it visually even around around tabs*/
+    justify-content: space-between;
+  }
+
+  .primary-navigation {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 2rem;
     }
 
     a {
-      color: var(--text-high-contrast);
+      text-decoration: none;
+    }
+  }
+
+  .site-footer {
+    text-align: center;
+    padding-block: 2rem;
+    background-color: var(--background-dark);
+    display: grid;
+    gap: 2rem;
+
+    a {
+      color: var(--text-main);
     }
 
     a:hover,
@@ -196,10 +319,69 @@
       color: var(--text-brand-light);
     }
   }
+
+  .site-footer--title {
+    font-size: var(--font-size-lg);
+    font-family: var(--ff-heading);
+    font-weight: 700;
+  }
+
+  .hero {
+    text-align: center;
+    background-image: url(/assets/hero.webp);
+    background-size: cover;
+    background-position: center;
+    font-size: var(--font-size-md);
+    color: var(--text-high-contrast);
+  }
+
+  .hero--title {
+    font-size: var(--font-size-heading-lg);
+    > span {
+      display: block;
+      font-size: var(--font-size-heading-xl);
+      color: var(--text-brand);
+    }
+  }
+
+  .card {
+    display: grid;
+    gap: var(--card-gap, 1rem);
+    padding: 1rem;
+    background-color: var(--background-light);
+    border-radius: var(--border-radius-lg);
+
+    img {
+      border-radius: var(--border-radius-med);
+    }
+  }
+
+  .card--title {
+    color: var(--card-title-color, var(--text-brand));
+    font-size: var(--card-title-font-size, var(--font-size-heading-sm));
+  }
+
+  .button {
+    display: inline-flex; /*will flex if icon needs to be added*/
+    padding: 0.5rem 1rem;
+    background-color: var(--background-accent-main);
+    font-family: var(--ff-heading);
+    font-weight: 700;
+    font-size: var(--font-size-md);
+    cursor: pointer;
+    text-decoration: none;
+    border-radius: var(--border-radius-med);
+  }
+
+  .button:hover,
+  .button:focus-visible {
+    color: var(--text-high-contrast);
+    background-color: var(--background-accent-light);
+  }
 }
 
-/*buttons are too short to describe in full the context. Utilities created for screen readers and assistive tech*/
 @layer utilities {
+  /*buttons are too short to describe in full the context. Utilities created for screen readers and assistive tech*/
   .visually-hidden {
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
@@ -209,41 +391,78 @@
     white-space: nowrap;
     width: 1px;
   }
-}
 
-/* limit the maximum width the content can reach and add custom properties because it shows up in multi spots*/
-@layer layout {
-  .wrapper {
-    --wrapper-max-width: 1130px;
-    --wrapper-padding: 1rem;
-
-    max-width: var(--wrapper-max-width);
-    margin-inline: auto;
-    padding-inline: var(--wrapper-padding);
-    /* helps to match the Figma file */
-    box-sizing: content-box;
+  /*background colors, font sizes, border radius go into utility classes*/
+  .section-title {
+    font-size: var(--font-size-heading-regular);
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-brand {
+    color: var(--text-brand);
+  }
+  .text-brand-light {
+    color: var(--text-brand-light);
+  }
+  .text-main {
+    color: var(--text-main);
+  }
+  .text-high-contrast {
+    color: var(--text-high-contrast);
+  }
+  .background-main {
+    background-color: var(--background-main);
+  }
+  .background-light {
+    background-color: var(--background-light);
+  }
+  .background-extra-light {
+    background-color: var(--background-extra-light);
+  }
+  .background-dark {
+    background-color: var(--background-dark);
+  }
+  .background-extra-dark {
+    background-color: var(--background-extra-dark);
+  }
+  .background-accent {
+    background-color: var(--background-accent-dark);
+  }
+  /*.background-accent-light {
+   background-color: var(--background-accent-light);
   }
 
-  /*data attributes based on CUBE CSS styling. Easier to read in HTML. Can hook into with JS. The symbol & is a placeholder for the original selector (wrapper)*/
-  &[data-type="narrow"] {
-    --wrapper-max-width: 720px;
+  .background-accent-main {
+    background-color: var(--background-accent-main);
   }
 
-  &[data-type="wide"] {
-    --wrapper-max-width: 1330px;
+  .background-accent-dark {
+    background-color: var(--background-accent-dark);
+  }*/
+
+  .font-size-heading-sm {
+    font-size: var(--font-size-heading-sm);
   }
-
-  @layer layout {
-    .section {
-      padding-block: 3.75rem;
-
-      @media (min-width: 760px) {
-        padding-block: 8rem;
-
-        &[data-padding="compact"] {
-          padding-block: 4.5rem;
-        }
-      }
-    }
+  .font-size-heading-regular {
+    font-size: var(--font-size-heading-regular);
+  }
+  .font-size-heading-lg {
+    font-size: var(--font-size-heading-lg);
+  }
+  .font-size-heading-xl {
+    font-size: var(--font-size-heading-xl);
+  }
+  .font-size-sm {
+    font-size: var(--font-size-sm);
+  }
+  .font-size-regular {
+    font-size: var(--font-size-regular);
+  }
+  .font-size-md {
+    font-size: var(--font-size-md);
+  }
+  .font-size-lg {
+    font-size: var(--font-size-lg);
   }
 }
