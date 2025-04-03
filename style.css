@@ -97,6 +97,7 @@
     --clr-gray-100: hsl(0, 2%, 79%);
     --clr-brand-400: hsl(25, 88%, 75%);
     --clr-brand-500: hsl(25, 88%, 66%);
+    --clr-green-550: hsla(143, 38%, 37%, 0.5);
     --clr-green-400: hsl(143, 19%, 49%);
     --clr-green-500: hsl(143, 38%, 37%);
     --clr-green-600: hsl(145, 29%, 19%);
@@ -154,6 +155,8 @@
 
     --background-accent-light: var(--clr-green-400);
     --background-accent-main: var(--clr-green-500);
+    /*glassy effect*/
+    --background-accent-main-rgb: var(var(--clr-green-500) / 0.4);
     --background-accent-dark: var(--clr-green-600);
 
     --background-extra-light: var(--clr-brown-500);
@@ -386,7 +389,8 @@
       font-size: var(--font-size-lg);
       font-weight: 700;
       font-family: var(--ff-heading);
-      background-color: var(--background-accent-main);
+      background-color: var(--clr-green-550);
+      backdrop-filter: blur(1.5rem);
       padding: 2rem;
       border-radius: 0 0 0 var(--border-radius-lg);
 
@@ -571,6 +575,17 @@
 
     img {
       border-radius: var(--border-radius-med);
+    }
+  }
+
+  .card-gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+
+    @media (width < 600px) {
+      width: 100%;
+      max-height: 100%;
     }
   }
 
