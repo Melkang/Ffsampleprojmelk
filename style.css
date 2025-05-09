@@ -476,7 +476,7 @@
 
   .hero {
     text-align: center;
-    background-image: url(/assets/hero.webp);
+    background-image: url(assets/hero.webp);
     background-size: cover;
     background-position: center;
     font-size: var(--font-size-md);
